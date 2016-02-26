@@ -8,6 +8,8 @@
 #include "input.h"
 #include "point.h"
 #include "polygon.h"
+#include "scanline.h"	
+#include "file.h"
 
 #include <iostream>
 #include <vector>
@@ -22,17 +24,31 @@ int ClampInt(int x, int min, int max){
 }
 
 int main(){	
-	Image windowImage = LoadBitmapAsImage("images/window.bmp");
-	Image mapImage = LoadBitmapAsImage("images/map.bmp");
-
+	//Image windowImage = LoadBitmapAsImage("images/window.bmp");
+	//Image mapImage = LoadBitmapAsImage("images/map.bmp");
+	// string shape;
+	// cin >> shape;
 	
 	InitFramebuffer(&width, &height);
-	set_conio_terminal_mode();
+	//set_conio_terminal_mode();
+
+	vector<string> filenames;
+    filenames.push_back("points.txt");
+
+    
+	map<string, vector<Point> > points = getPointsFromFile(filenames);
 	
 	//test polygon
 	ClearScreen();
-	vector<Point> Pol = {Point{300,300},Point{400,300},Point{400,500}};
-	DrawPolygon(Pol);
+	//vector<Point> Pol = {Point{300,300},Point{400,300},Point{400,500}};
+	vector<Point> Pol = points["square"];
+	//DrawPolygon(Pol);
+
+	int ymax_global, ymin_global;
+
+	vector<Line> lines = produceLines(Pol, ymax_global, ymin_global);
+	fill(lines, ymax_global, ymin_global, (Color32){255,255,255,255});
+
 	SwapBuffers();
 	usleep(2000000);
 	
