@@ -55,16 +55,13 @@ void CloseFramebuffer(){
 }
 
 void ClearScreen(){
-	printf("a\n");
 	int i;
 	for(i = 0; i < screensize; i++){
 		*(bbp+i) = 0;
 	}
-	printf("a\n");
 }
 
 void SetPixel(int x, int y, Color32 color){
-	printf("%d %d\n",x,y);
 	long int location = 0;
 	if(color.a != 0 && x >= 0 && x < vinfo.xres && y >= 0 && y < vinfo.yres){
 		location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) + (y+vinfo.yoffset) * finfo.line_length;

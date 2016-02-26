@@ -49,8 +49,13 @@ int main(){
 	vector<Line> lines = produceLines(Pol, ymax_global, ymin_global);
 	fill(lines, ymax_global, ymin_global, (Color32){255,255,255,255});
 
+
+	vector<Point> Pol = {Point{300,300},Point{400,300},Point{400,500}};
+	drawPolygon(Pol, 1.5, 45);
+	drawPolygon(Pol);
+	drawPolygon(Pol, 1.5, 90);
 	SwapBuffers();
-	usleep(2000000);
+	// usleep(2000000);
 	
 	/*float scrollRate = 6;
 	float minScale = 1;
