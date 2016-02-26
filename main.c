@@ -50,7 +50,7 @@ int main(){
 	fill(lines, ymax_global, ymin_global, (Color32){255,255,255,255});
 
 
-	vector<Point> Pol = {Point{300,300},Point{400,300},Point{400,500}};
+	Pol = {Point{300,300},Point{400,300},Point{400,500}};
 	drawPolygon(Pol, 1.5, 45);
 	drawPolygon(Pol);
 	drawPolygon(Pol, 1.5, 90);
