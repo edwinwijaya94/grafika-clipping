@@ -9,6 +9,9 @@
 
 using namespace std;
 
-void DrawPolygon(vector<Point>);
+Point getPivot(vector<Point> vertices);
+Point transformPoint(Point P, Point centroid, float scale, float rotation);
 
+void drawPolygon(vector<Point>);
+void drawPolygon(vector<Point> Pol, float scale, float rotation );
 #endif

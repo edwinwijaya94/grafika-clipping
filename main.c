@@ -32,9 +32,11 @@ int main(){
 	//test polygon
 	ClearScreen();
 	vector<Point> Pol = {Point{300,300},Point{400,300},Point{400,500}};
-	DrawPolygon(Pol);
+	drawPolygon(Pol, 1.5, 45);
+	drawPolygon(Pol);
+	drawPolygon(Pol, 1.5, 90);
 	SwapBuffers();
-	usleep(2000000);
+	// usleep(2000000);
 	
 	/*float scrollRate = 6;
 	float minScale = 1;
