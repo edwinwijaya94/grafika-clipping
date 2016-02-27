@@ -55,13 +55,17 @@ Point transformPoint(Point P, Point centroid, float scale, float rotation){
 }
 
 
-void drawPolygon(vector<Point> Pol){
+void drawPolygon(vector<Point> Pol, Color32 color){
     for(int k=0; k<Pol.size(); k++){     
         DrawLine(Pol[k].x, Pol[k].y, Pol[(k+1)%Pol.size()].x, Pol[(k+1)%Pol.size()].y, Color32{255,255,255,255});
     }
+    //fill
+    int ymax_global, ymin_global;
+	vector<Line> lines = produceLines(Pol, ymax_global, ymin_global);
+	fill(lines, ymax_global, ymin_global, color);
 }
 
-void drawPolygon(vector<Point> Pol, float scale, float rotation ){
+void drawPolygon(vector<Point> Pol, float scale, float rotation, Color32 color ){
     Point centroid = getPivot(Pol);
     //printf("check\n");
 	for(int k=0; k<Pol.size(); k++){
@@ -69,6 +73,5 @@ void drawPolygon(vector<Point> Pol, float scale, float rotation ){
         Pol[k] = transformPoint(Pol[k],centroid, scale, rotation);
         //printf("after : %d %d\n", Pol[k].x, Pol[k].y);
 	}
-	
-	drawPolygon(Pol);
+	drawPolygon(Pol, color); // draw and fill
 }
