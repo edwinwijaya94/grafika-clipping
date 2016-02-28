@@ -4,7 +4,6 @@ Shape::Shape() { }
 
 Shape::Shape(vector<Point> vertices) {
 	setVertices(vertices);
-	color = WHITE;
 }
 
 void Shape::setVertices(vector<Point> vertices) {
@@ -46,10 +45,6 @@ void Shape::setVertices(vector<Point> vertices) {
 	printf("ymax : %d, ymin : %d\n", ymax, ymin);
 }
 
-void Shape::setColor(Color32 color) {
-	this->color = color;
-}
-
 int Shape::isIntersect(Line line, int y) {
 	if (y == line.phigh.y) {
 		return 2;
@@ -62,7 +57,7 @@ int Shape::isIntersect(Line line, int y) {
 		return 0;
 }
 
-void Shape::fill() {
+void Shape::fill(Color32 color) {
   vector<Point> tipot;
   int oldy;
   printf("fill\n");
@@ -103,8 +98,10 @@ void Shape::fill() {
     for (int i = 0; i < tipot.size()-1; i += 2) {
     	//printf("tipot ke-%d : (%d, %d)\n", i, tipot[i].x, tipot[i].y);
     	for (int x = tipot[i].x; x <= tipot[i+1].x; x++) {
-    		SetPixel(x, y, color);
-
+    		if (freeMatrix[y][x]) {
+				SetPixel(x, y, color);	
+				freeMatrix[y][x] = false;
+    		}
     	}
     }
   }
@@ -135,5 +132,58 @@ void Shape::transform(int dx, int dy, float scale, float rotation) {
 	}
 	lines.clear();
 	setVertices(vertices);
-	fill();
+	//fill();
+}
+
+void Shape::fillGradient(Color32 color, int interval) {
+  vector<Point> tipot;
+  int oldy;
+  Gradient grad(color);
+  printf("fill\n");
+  for (int y = ymax; y > ymin; y--) {
+  	tipot.clear();
+  	//printf("scanline ke-%d\n", y);
+    for (int j = 0; j < lines.size(); j++) {
+      grad.resetColor(color);	
+      if (isIntersect(lines[j], y) == 2) {
+      	lines[j].dx = abs(lines[j].plow.x-lines[j].phigh.x);
+      	lines[j].dy = abs(lines[j].plow.y-lines[j].phigh.y);
+      	lines[j].sx = lines[j].phigh.x < lines[j].plow.x ? 1 : -1;
+      	lines[j].sy = lines[j].phigh.y < lines[j].plow.y ? 1 : -1;
+      	lines[j].err = (lines[j].dx > lines[j].dy ? lines[j].dx : (-1 * lines[j].dy))/2;
+      	lines[j].curpoint.x = lines[j].phigh.x;
+      	lines[j].curpoint.y = lines[j].phigh.y;
+
+      	tipot.push_back(lines[j].curpoint);
+      }
+      else if (isIntersect(lines[j], y) == 1) {
+      	oldy = lines[j].curpoint.y;
+      	do {
+      		lines[j].e2 = lines[j].err;
+	      	if (lines[j].e2 > -1*lines[j].dx) { lines[j].err -= lines[j].dy; lines[j].curpoint.x += lines[j].sx; }
+	      	if (lines[j].e2 < lines[j].dy) { lines[j].err += lines[j].dx; lines[j].curpoint.y += lines[j].sy; }		
+      		//printf("scanline ke-%d : garis ke 2 : (%d, %d)\n", y, lines[j].curpoint.x, lines[j].curpoint.y);
+	      } while (lines[j].curpoint.y == oldy);
+      	
+      	//if (lines[j].e2 < lines[j].dy) { lines[j].err += lines[j].dx; lines[j].curpoint.y = y; }
+
+      	tipot.push_back(lines[j].curpoint);
+      }
+      //if (j == 2)
+      	//printf("scanline ke-%d : garis ke 2 : (%d, %d)\n", y, lines[j].curpoint.x, lines[j].curpoint.y);
+    }
+    sort(tipot.begin(), tipot.end());
+    //for (int i = 0; i < tipot.size(); i ++) 
+    	//printf("tipot ke-%d : (%d, %d)\n", i, tipot[i].x, tipot[i].y);
+    for (int i = 0; i < tipot.size()-1; i += 2) {
+    	//printf("tipot ke-%d : (%d, %d)\n", i, tipot[i].x, tipot[i].y);
+    	for (int x = tipot[i].x; x <= tipot[i+1].x; x++) {
+    		if (freeMatrix[y][x]) {
+				SetPixel(x, y, grad.getColor());	
+				grad.gradate(interval);
+				freeMatrix[y][x] = false;
+    		}
+    	}
+    }
+  }	
 }

@@ -7,6 +7,8 @@
 #include "line.h"
 #include "color32.h"
 #include "framebuffer.h"
+#include "matrix.h"
+#include "gradient.h"
 
 using namespace std;
 
@@ -17,14 +19,13 @@ class Shape {
 	int ymax;
 	int ymin;  
 	Point centroid;
-	Color32 color;
 	int isIntersect(Line, int);
   public:
     Shape();
     Shape(vector<Point> vertices);
     void setVertices(vector<Point> vertices);
-    void setColor(Color32 color);
-    void fill();
+    void fill(Color32 color);
+    void fillGradient(Color32 color, int interval);
     void transform(int dx, int dy, float scale, float rotation);
 };
 
