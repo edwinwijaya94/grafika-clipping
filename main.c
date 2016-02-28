@@ -9,8 +9,8 @@
 #include "point.h"
 #include "polygon.h"
 //#include "scanline.h"	
-#include "file.h"
 #include "shape.h"
+#include "file.h"
 
 #include <iostream>
 #include <vector>
@@ -36,30 +36,42 @@ int main(){
 	vector<string> filenames;
     filenames.push_back("points.txt");
 
-    
 	map<string, vector<Point> > points = getPointsFromFile(filenames);
+	printf("points size: %d\n",points.size());
+	// for(map<string, vector<Point>>::iterator it=points.begin(); it!=points.end(); it++){
+	// 	cout<<"it:"<<it->first<<endl;
+	// }
+	//cout<<points["pesawat"][0]<<endl;
 	
 	//test polygon
 	ClearScreen();
-	//vector<Point> Pol = {Point{300,300},Point{400,300},Point{400,500}};
-	vector<Point> Pol = points["triangle"];
-	//DrawPolygon(Pol);
+	vector<Point> Ptriangle = points["triangle"];
+	//printf("Pol size: %d\n",Pol.size());
 
 	//int ymax_global, ymin_global;
-
 	//vector<Line> lines = produceLines(Pol, ymax_global, ymin_global);
-	//fill(lines, ymax_global, ymin_global, WHITE);
+	//fill(lines, ymax_global, ymin_global, (Color32){255,255,255,255});
+	//printf("a\n");
 
-	Shape shape(Pol);
-	//shape.fill();
-	shape.transform(300, 100, 1.0, 90.0);
+	//vector<Point> Pol = {Point{200,300},Point{300,300},Point{300,500}};
+	
+	// drawPolygon(Pol, 1.5, 45, (Color32){255,0,0,255});
+	// //drawPolygon(Pol, (Color32){255,0,0,255});
+	// Pol = {Point{450,300},Point{550,300},Point{550,500}};
+	// drawPolygon(Pol, 1.5, 90, (Color32){255,0,0,255});
 
+	Shape shape(Ptriangle);
+	shape.fill();
+	shape.transform(200, -100, 1.5, 45.0);	
+	shape.transform(350, 200, 0.5, 90.0);
 
-	Pol = {Point{300,300},Point{400,300},Point{400,500}};
-	// drawPolygon(Pol, 1.5, 45);
-	// drawPolygon(Pol);
-	// drawPolygon(Pol, 1.5, 90);
+	// Shape shape2(Psquare);
+	// shape2.fill();
+	// shape2.transform(300, -200, 1.0, 45.0);	
+	// shape2.transform(300, 300, 1.0, 45.0);
+
 	SwapBuffers();
+	printf("a\n");
 	// usleep(2000000);
 	
 	/*float scrollRate = 6;
@@ -106,5 +118,7 @@ int main(){
 	}
 	FreeImage(&mapImage);
 	FreeImage(&windowImage);*/
+	
 	return 0;
 }
+

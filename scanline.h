@@ -8,6 +8,7 @@
 #include "point.h"
 #include "framebuffer.h"
 #include "color32.h"
+#include "line.h"
 
 using namespace std;
 

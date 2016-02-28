@@ -38,8 +38,12 @@ void Shape::setVertices(vector<Point> vertices) {
 		  xmax = vertices[i].x;
 		if (vertices[i].x < xmin)
 		  xmin = vertices[i].x;
+		printf("titik ke-%d : (%d, %d)\n", i, vertices[i].x, vertices[i].y);
 	}
 	centroid = Point((xmax+xmin)/2, (ymax+ymin)/2);
+	for (int j = 0; j < lines.size(); j++)
+	      printf("garis ke-%d : (%d, %d) - (%d, %d)\n", j, lines[j].phigh.x, lines[j].phigh.y, lines[j].plow.x, lines[j].plow.y);	
+	printf("ymax : %d, ymin : %d\n", ymax, ymin);
 }
 
 void Shape::setColor(Color32 color) {
@@ -47,10 +51,11 @@ void Shape::setColor(Color32 color) {
 }
 
 int Shape::isIntersect(Line line, int y) {
-	if (y == line.plow.y) {
+	if (y == line.phigh.y) {
 		return 2;
 	}
-	else if (((y > line.plow.y) && (y < line.phigh.y)) || (y == line.phigh.y)) {
+	//else if (((y > line.plow.y) && (y < line.phigh.y)) || (y == line.plow.y)) {
+	else if ((y > line.plow.y) && (y < line.phigh.y)) {
 		return 1;
 	}
 	else 
@@ -59,32 +64,47 @@ int Shape::isIntersect(Line line, int y) {
 
 void Shape::fill() {
   vector<Point> tipot;
-  for (int y = ymin; y <= ymax; y++) {
+  int oldy;
+  printf("fill\n");
+  for (int y = ymax; y > ymin; y--) {
   	tipot.clear();
+  	//printf("scanline ke-%d\n", y);
     for (int j = 0; j < lines.size(); j++) {
       if (isIntersect(lines[j], y) == 2) {
-      	lines[j].dx = abs(lines[j].phigh.x-lines[j].plow.x);
-      	lines[j].dy = abs(lines[j].phigh.y-lines[j].plow.y);
-      	lines[j].sx = lines[j].plow.x < lines[j].phigh.x ? 1 : -1;
-      	lines[j].sy = lines[j].plow.y < lines[j].phigh.y ? 1 : -1;
-      	lines[j].err = (lines[j].dx > lines[j].dy ? lines[j].dx : -1 * lines[j].dy)/2;
-      	lines[j].curpoint = lines[j].plow;
-
-      	tipot.push_back(lines[j].plow);
-      }
-      else if (isIntersect(lines[j], y) == 1) {
-      	lines[j].e2 = lines[j].err;
-      	if (lines[j].e2 > -1*lines[j].dx) { lines[j].err -= lines[j].dy; lines[j].curpoint.x += lines[j].sx; }
-      	//if (lines[j].e2 < lines[j].dy) { lines[j].err += lines[j].dx; lines[j].curpoint.y += lines[j].sy; }
-      	if (lines[j].e2 < lines[j].dy) { lines[j].err += lines[j].dx; lines[j].curpoint.y = y; }
+      	lines[j].dx = abs(lines[j].plow.x-lines[j].phigh.x);
+      	lines[j].dy = abs(lines[j].plow.y-lines[j].phigh.y);
+      	lines[j].sx = lines[j].phigh.x < lines[j].plow.x ? 1 : -1;
+      	lines[j].sy = lines[j].phigh.y < lines[j].plow.y ? 1 : -1;
+      	lines[j].err = (lines[j].dx > lines[j].dy ? lines[j].dx : (-1 * lines[j].dy))/2;
+      	lines[j].curpoint.x = lines[j].phigh.x;
+      	lines[j].curpoint.y = lines[j].phigh.y;
 
       	tipot.push_back(lines[j].curpoint);
       }
+      else if (isIntersect(lines[j], y) == 1) {
+      	oldy = lines[j].curpoint.y;
+      	do {
+      		lines[j].e2 = lines[j].err;
+	      	if (lines[j].e2 > -1*lines[j].dx) { lines[j].err -= lines[j].dy; lines[j].curpoint.x += lines[j].sx; }
+	      	if (lines[j].e2 < lines[j].dy) { lines[j].err += lines[j].dx; lines[j].curpoint.y += lines[j].sy; }		
+      		//printf("scanline ke-%d : garis ke 2 : (%d, %d)\n", y, lines[j].curpoint.x, lines[j].curpoint.y);
+	      } while (lines[j].curpoint.y == oldy);
+      	
+      	//if (lines[j].e2 < lines[j].dy) { lines[j].err += lines[j].dx; lines[j].curpoint.y = y; }
+
+      	tipot.push_back(lines[j].curpoint);
+      }
+      //if (j == 2)
+      	//printf("scanline ke-%d : garis ke 2 : (%d, %d)\n", y, lines[j].curpoint.x, lines[j].curpoint.y);
     }
     sort(tipot.begin(), tipot.end());
+    for (int i = 0; i < tipot.size(); i ++) 
+    	printf("tipot ke-%d : (%d, %d)\n", i, tipot[i].x, tipot[i].y);
     for (int i = 0; i < tipot.size()-1; i += 2) {
-    	for (int x = tipot[i].x; x < tipot[i+1].x; x++) {
+    	//printf("tipot ke-%d : (%d, %d)\n", i, tipot[i].x, tipot[i].y);
+    	for (int x = tipot[i].x; x <= tipot[i+1].x; x++) {
     		SetPixel(x, y, color);
+
     	}
     }
   }
