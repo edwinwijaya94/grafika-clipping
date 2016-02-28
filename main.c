@@ -8,8 +8,9 @@
 #include "input.h"
 #include "point.h"
 #include "polygon.h"
-#include "scanline.h"	
+//#include "scanline.h"	
 #include "file.h"
+#include "shape.h"
 
 #include <iostream>
 #include <vector>
@@ -41,19 +42,23 @@ int main(){
 	//test polygon
 	ClearScreen();
 	//vector<Point> Pol = {Point{300,300},Point{400,300},Point{400,500}};
-	vector<Point> Pol = points["square"];
+	vector<Point> Pol = points["triangle"];
 	//DrawPolygon(Pol);
 
-	int ymax_global, ymin_global;
+	//int ymax_global, ymin_global;
 
-	vector<Line> lines = produceLines(Pol, ymax_global, ymin_global);
-	fill(lines, ymax_global, ymin_global, (Color32){255,255,255,255});
+	//vector<Line> lines = produceLines(Pol, ymax_global, ymin_global);
+	//fill(lines, ymax_global, ymin_global, WHITE);
+
+	Shape shape(Pol);
+	//shape.fill();
+	shape.transform(300, 100, 1.0, 90.0);
 
 
 	Pol = {Point{300,300},Point{400,300},Point{400,500}};
-	drawPolygon(Pol, 1.5, 45);
-	drawPolygon(Pol);
-	drawPolygon(Pol, 1.5, 90);
+	// drawPolygon(Pol, 1.5, 45);
+	// drawPolygon(Pol);
+	// drawPolygon(Pol, 1.5, 90);
 	SwapBuffers();
 	// usleep(2000000);
 	

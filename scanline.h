@@ -11,17 +11,17 @@
 
 using namespace std;
 
-typedef struct {
-  Point plow; // plow adalah point dengan y minimum
-  Point phigh; // plow adalah point dengan y maximum
-  int dx;
-  int dy;
-  int sx;
-  int sy;
-  int err;
-  int e2;
-  Point curpoint;
-} Line;
+// typedef struct {
+//   Point plow; // plow adalah point dengan y minimum
+//   Point phigh; // plow adalah point dengan y maximum
+//   int dx;
+//   int dy;
+//   int sx;
+//   int sy;
+//   int err;
+//   int e2;
+//   Point curpoint;
+// } Line;
 
 vector<Line> produceLines(vector<Point>, int &ymax, int &ymin);
 int isIntersect(Line, int);
